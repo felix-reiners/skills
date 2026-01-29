@@ -1,0 +1,105 @@
+{
+  "nodes": [
+    {
+      "id": "e5f6a7b8c9d00001",
+      "type": "text",
+      "text": "# Machine Learning\n\nAlgorithms that learn from data",
+      "x": 0,
+      "y": 0,
+      "width": 280,
+      "height": 180,
+      "color": "1"
+    },
+    {
+      "id": "e5f6a7b8c9d00002",
+      "type": "text",
+      "text": "## Neural Networks\n\nInspired by biological neurons",
+      "x": 350,
+      "y": -150,
+      "width": 260,
+      "height": 160,
+      "color": "2"
+    },
+    {
+      "id": "e5f6a7b8c9d00003",
+      "type": "text",
+      "text": "## Deep Learning\n\nMulti-layered neural networks",
+      "x": 650,
+      "y": -100,
+      "width": 260,
+      "height": 160,
+      "color": "3"
+    },
+    {
+      "id": "e5f6a7b8c9d00004",
+      "type": "text",
+      "text": "## Supervised Learning\n\nLearning from labeled data",
+      "x": 350,
+      "y": 150,
+      "width": 260,
+      "height": 160,
+      "color": "4"
+    },
+    {
+      "id": "e5f6a7b8c9d00005",
+      "type": "text",
+      "text": "## Reinforcement Learning\n\nLearning through rewards",
+      "x": -350,
+      "y": 150,
+      "width": 260,
+      "height": 160,
+      "color": "5"
+    },
+    {
+      "id": "f6a7b8c9d0e10001",
+      "type": "link",
+      "url": "https://en.wikipedia.org/wiki/Machine_learning",
+      "x": -350,
+      "y": -150,
+      "width": 280,
+      "height": 100,
+      "color": "6"
+    }
+  ],
+  "edges": [
+    {
+      "id": "f6a7b8c9d0e10002",
+      "fromNode": "e5f6a7b8c9d00001",
+      "toNode": "e5f6a7b8c9d00002",
+      "label": "includes"
+    },
+    {
+      "id": "f6a7b8c9d0e10003",
+      "fromNode": "e5f6a7b8c9d00002",
+      "toNode": "e5f6a7b8c9d00003",
+      "label": "enables"
+    },
+    {
+      "id": "f6a7b8c9d0e10004",
+      "fromNode": "e5f6a7b8c9d00001",
+      "toNode": "e5f6a7b8c9d00004",
+      "label": "type of"
+    },
+    {
+      "id": "f6a7b8c9d0e10005",
+      "fromNode": "e5f6a7b8c9d00001",
+      "toNode": "e5f6a7b8c9d00005",
+      "label": "type of"
+    },
+    {
+      "id": "f6a7b8c9d0e10006",
+      "fromNode": "f6a7b8c9d0e10001",
+      "toNode": "e5f6a7b8c9d00001",
+      "label": "explains",
+      "color": "6"
+    },
+    {
+      "id": "f6a7b8c9d0e10007",
+      "fromNode": "e5f6a7b8c9d00004",
+      "toNode": "e5f6a7b8c9d00002",
+      "label": "trains",
+      "fromEnd": "none",
+      "toEnd": "arrow"
+    }
+  ]
+}

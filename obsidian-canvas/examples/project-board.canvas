@@ -1,0 +1,70 @@
+{
+  "nodes": [
+    {
+      "id": "c3d4e5f6a7b80001",
+      "type": "group",
+      "label": "To Do",
+      "x": 0,
+      "y": 0,
+      "width": 350,
+      "height": 600,
+      "color": "1"
+    },
+    {
+      "id": "c3d4e5f6a7b80002",
+      "type": "group",
+      "label": "In Progress",
+      "x": 400,
+      "y": 0,
+      "width": 350,
+      "height": 600,
+      "color": "3"
+    },
+    {
+      "id": "c3d4e5f6a7b80003",
+      "type": "group",
+      "label": "Done",
+      "x": 800,
+      "y": 0,
+      "width": 350,
+      "height": 600,
+      "color": "4"
+    },
+    {
+      "id": "d4e5f6a7b8c90001",
+      "type": "text",
+      "text": "**Task 1**\n\nImplement login feature",
+      "x": 25,
+      "y": 50,
+      "width": 300,
+      "height": 120
+    },
+    {
+      "id": "d4e5f6a7b8c90002",
+      "type": "text",
+      "text": "**Task 2**\n\nDesign dashboard layout",
+      "x": 25,
+      "y": 200,
+      "width": 300,
+      "height": 120
+    },
+    {
+      "id": "d4e5f6a7b8c90003",
+      "type": "text",
+      "text": "**Task 3**\n\nWrite API documentation",
+      "x": 425,
+      "y": 50,
+      "width": 300,
+      "height": 120
+    },
+    {
+      "id": "d4e5f6a7b8c90004",
+      "type": "text",
+      "text": "**Task 4**\n\nSet up CI/CD pipeline",
+      "x": 825,
+      "y": 50,
+      "width": 300,
+      "height": 120
+    }
+  ]
+}
