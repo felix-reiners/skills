@@ -6,8 +6,47 @@ Obsidian Canvas Creator - Helper script for creating .canvas files
 import json
 import secrets
 import argparse
-from typing import List, Dict, Optional, Tuple
+from typing import List, Dict, Optional, Tuple, Union
 import math
+
+
+def estimate_height(text: str, width: int = 250, base_height: int = 60) -> int:
+    """
+    Estimate node height to fit all content without cutoff.
+
+    Args:
+        text: Markdown text content
+        width: Node width in pixels
+        base_height: Minimum padding (top + bottom)
+
+    Returns:
+        Estimated height in pixels
+    """
+    lines = text.split('\n')
+    total_lines = 0.0
+    chars_per_line = max(1, (width - 40) // 8)  # ~8px per char, 20px padding each side
+
+    for line in lines:
+        if line.startswith('# '):
+            total_lines += 2.0  # H1 headers are taller
+        elif line.startswith('## '):
+            total_lines += 1.5  # H2 headers
+        elif line.startswith('### '):
+            total_lines += 1.3  # H3 headers
+        elif line.strip() == '':
+            total_lines += 0.5  # Empty lines
+        elif line.startswith('- ') or line.startswith('* ') or (len(line) > 2 and line[0].isdigit() and line[1] == '.'):
+            # List items - account for bullet/number + wrap
+            content = line[2:].strip() if line[0] in '-*' else line[line.index('.')+1:].strip()
+            wrapped = max(1, -(-len(content) // chars_per_line))
+            total_lines += wrapped
+        else:
+            # Regular text with word wrap
+            wrapped = max(1, -(-len(line) // chars_per_line))
+            total_lines += wrapped
+
+    line_height = 24  # ~24px per line in Obsidian
+    return base_height + int(total_lines * line_height)
 
 
 class CanvasBuilder:
@@ -23,12 +62,17 @@ class CanvasBuilder:
         x: int,
         y: int,
         width: int = 250,
-        height: int = 200,
+        height: Optional[int] = None,
         color: Optional[str] = None,
         node_id: Optional[str] = None
     ) -> str:
-        """Add a text node with markdown content"""
+        """
+        Add a text node with markdown content.
+
+        If height is not specified, it will be auto-calculated to fit the content.
+        """
         node_id = node_id or self._generate_id()
+        calculated_height = height if height is not None else estimate_height(text, width)
         node = {
             "id": node_id,
             "type": "text",
@@ -36,7 +80,7 @@ class CanvasBuilder:
             "x": x,
             "y": y,
             "width": width,
-            "height": height
+            "height": calculated_height
         }
         if color:
             node["color"] = color
@@ -235,9 +279,98 @@ class CanvasBuilder:
             
             # Connect to center
             self.add_edge(center_id, node_id)
-            
+
         return node_ids, center_id
-        
+
+    def create_column_layout(
+        self,
+        columns: List[List[str]],
+        start_x: int = 0,
+        start_y: int = 0,
+        col_width: int = 200,
+        col_spacing: int = 50,
+        row_spacing: int = 30,
+        connect_vertical: bool = True,
+        colors: Optional[List[str]] = None,
+        **kwargs
+    ) -> List[List[str]]:
+        """
+        Create a column-based flowchart layout with aligned rows.
+
+        Each column flows vertically, but corresponding rows across columns
+        share the same Y position (determined by the tallest node in that row).
+
+        Args:
+            columns: List of columns, each column is a list of text content
+                     e.g., [["Step 1", "Step 2"], ["Alt 1", "Alt 2"]]
+            start_x: X position of first column
+            start_y: Y position of first row
+            col_width: Width of each node
+            col_spacing: Horizontal gap between columns
+            row_spacing: Vertical gap between rows
+            connect_vertical: If True, add vertical edges within each column
+            colors: Optional list of colors, one per column
+
+        Returns:
+            2D list of node IDs matching the input structure
+        """
+        if not columns:
+            return []
+
+        num_cols = len(columns)
+        max_rows = max(len(col) for col in columns)
+
+        # Calculate x position for each column (centered)
+        col_x_positions = [start_x + i * (col_width + col_spacing) for i in range(num_cols)]
+
+        # First pass: calculate row heights based on tallest node in each row
+        row_heights = []
+        for row_idx in range(max_rows):
+            row_height = 0
+            for col_idx, col in enumerate(columns):
+                if row_idx < len(col):
+                    height = estimate_height(col[row_idx], col_width)
+                    row_height = max(row_height, height)
+            row_heights.append(row_height)
+
+        # Calculate y positions for each row
+        row_y_positions = []
+        current_y = start_y
+        for height in row_heights:
+            row_y_positions.append(current_y)
+            current_y += height + row_spacing
+
+        # Second pass: create nodes with aligned positions
+        node_ids: List[List[str]] = [[] for _ in range(num_cols)]
+
+        for col_idx, col in enumerate(columns):
+            color = colors[col_idx] if colors and col_idx < len(colors) else None
+            prev_node_id = None
+
+            for row_idx, text in enumerate(col):
+                x = col_x_positions[col_idx]
+                y = row_y_positions[row_idx]
+                height = row_heights[row_idx]  # Use uniform row height
+
+                node_id = self.add_text_node(
+                    text, x, y,
+                    width=col_width,
+                    height=height,
+                    color=color,
+                    **kwargs
+                )
+                node_ids[col_idx].append(node_id)
+
+                # Connect to previous node in column (vertical flow)
+                if connect_vertical and prev_node_id:
+                    self.add_edge(
+                        prev_node_id, node_id,
+                        from_side="bottom", to_side="top"
+                    )
+                prev_node_id = node_id
+
+        return node_ids
+
     def to_json(self, indent: int = 2) -> str:
         """Export canvas as JSON string"""
         canvas = {}
