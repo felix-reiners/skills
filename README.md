@@ -4,35 +4,59 @@ A collection of custom skills for [Claude Code](https://claude.ai/code), Anthrop
 
 ## Available Skills
 
-| Skill | Description |
-|-------|-------------|
-| [obsidian-canvas](./obsidian-canvas/) | Create and edit Obsidian .canvas files using the JSON Canvas format. Supports mind maps, flowcharts, project boards, and knowledge graphs. |
+### [obsidian-canvas](./obsidian-canvas/)
+
+Create production-ready Obsidian `.canvas` files with intelligent layout handling.
+
+**Key Features:**
+
+- **Auto-sizing nodes** — Height is calculated from content to prevent text cutoff. No more truncated labels or clipped descriptions.
+
+- **Row-aligned column layouts** — For flowcharts and pipelines, nodes in the same row automatically match the tallest node's height, keeping your diagram clean and readable.
+
+- **Straight connector logic** — Explicit guidance for vertical (`bottom` → `top`) and horizontal (`right` → `left`) flows, so your arrows don't zigzag unnecessarily.
+
+- **Python helper library** — Programmatically generate canvases with `CanvasBuilder`. Includes `estimate_height()` for content-aware sizing and `create_column_layout()` for multi-column flowcharts.
+
+- **Smart file placement** — Defaults to `docs/` folder when it exists (common in dev projects), otherwise saves to vault root.
+
+**Example use cases:**
+- System architecture diagrams
+- Data pipeline flowcharts
+- Project documentation with linked notes
+- Mind maps and knowledge graphs
 
 ## Installation
 
-1. Copy the skill folder to your Claude Code skills directory:
-   ```bash
-   cp -r obsidian-canvas ~/.claude/skills/
-   ```
+Copy the skill folder to your Claude Code skills directory:
+```bash
+cp -r obsidian-canvas ~/.claude/skills/
+```
 
-2. Or symlink for development:
-   ```bash
-   ln -s "$(pwd)/obsidian-canvas" ~/.claude/skills/obsidian-canvas
-   ```
+Or symlink for development:
+```bash
+ln -s "$(pwd)/obsidian-canvas" ~/.claude/skills/obsidian-canvas
+```
 
 ## Usage
 
-Once installed, Claude Code will automatically use these skills when relevant. For example:
-- Ask Claude to "create an Obsidian canvas for my project structure"
-- Request "make a mind map canvas showing the relationships between these concepts"
+Once installed, Claude Code will automatically use these skills when relevant:
+
+```
+> Create a canvas showing my API authentication flow
+
+> Make a flowchart for the data ingestion pipeline with 3 input sources
+
+> Generate an architecture diagram for this project
+```
 
 ## Structure
 
 Each skill contains:
-- `SKILL.md` - The skill definition with instructions for Claude
-- `references/` - Supporting documentation and specifications
-- `examples/` - Sample outputs demonstrating the skill
-- `scripts/` - Helper scripts (optional)
+- `SKILL.md` — Skill definition with instructions for Claude
+- `references/` — Supporting documentation and specifications
+- `examples/` — Sample outputs demonstrating the skill
+- `scripts/` — Helper scripts (Python utilities, etc.)
 
 ## Contributing
 
@@ -44,4 +68,4 @@ To add a new skill:
 
 ## License
 
-MIT
+MIT — see [LICENSE](./LICENSE)
